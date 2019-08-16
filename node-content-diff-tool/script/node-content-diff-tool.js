@@ -42,7 +42,8 @@ define(function (require, exports, module) {
         Ratchet.showModal({
             title: `<div id='diff-modal-title'>${title}</div>`,
             body: `<div id='diff-modal-content'>${content}</div>`,
-            modalClass: 'node-content-diff-modal'
+            modalClass: 'node-content-diff-modal',
+            big: true
         });
     }
 
