@@ -208,7 +208,7 @@ define(function (require, exports, module) {
 
     $(document).on('click', 'li.diff-tool.active-list-item', renderModal);
 
-    $(document).on('cloudcms-ready', function () {
+    $(document).on('mouseup', '.list-button-multi-documents-action-selector', function () {
         if (isVersionsList()) {
             // Insert a new option to the top of the select dropdown
             $(dropdownMenu).prepend(newDropdownOption);
