@@ -1,6 +1,7 @@
 define(function (require, exports, module) {
     require("../libs/diff-match-patch.js");
     require('css!../css/style.css');
+    const UI = require("ui");
     const $ = require("jquery");
     const dmp = new diff_match_patch();
     const windowHref = window.location.href;
@@ -194,7 +195,7 @@ define(function (require, exports, module) {
                 // The modal needs a title, might as well use the one on newDocumentVersion...
                 const modalTitle = newDocumentVersion.title;
 
-                // Execute our recursive function above
+                // Execute our recursive function above and add its output to the modal content
                 mainModalContent += buildPageContent({
                     newItem: newDocumentVersion,
                     oldItem: oldDocumentVersion,
@@ -208,14 +209,16 @@ define(function (require, exports, module) {
 
     $(document).on('click', 'li.diff-tool.active-list-item', renderModal);
 
-    $(document).on('mouseup', '.list-button-multi-documents-action-selector', function () {
+    $(document).on('cloudcms-ready', function () {
         if (isVersionsList()) {
             // Insert a new option to the top of the select dropdown
-            $(dropdownMenu).prepend(newDropdownOption);
 
             // Detect click on existing dropdown menu
             // Disable or enable our tool based on number of items selected
             $(dropdownToggleButton).on('click', function () {
+                if ($(dropdownMenu).find('.diff-tool').length === 0) {
+                    $(dropdownMenu).prepend(newDropdownOption);
+                }
                 if (isTwoItemsSelected()) {
                     enableDiffTool();
                 } else {
