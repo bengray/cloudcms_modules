@@ -51,7 +51,7 @@ define(function (require, exports, module) {
         oldItem = (oldItem || '').toString();
         newItem = (newItem || '').toString();
 
-        if (!oldItem && newItem) {
+        if (newItem && !oldItem ) {
             return `<div class="added-text">${newItem}</div>`;
         }
         if (!newItem && oldItem) {
