@@ -120,46 +120,46 @@ define(function (require, exports, module) {
     function iterateThroughRootObject({ newItem, oldItem }) {
         let modalContent = '';
 
-            Object.keys(newItem).forEach((property) => {
-                modalContent += `<div class="section-header">${property}</div>`;
-                modalContent += buildPageContent({
-                    newItem: newItem[property],
-                    oldItem: oldItem[property],
-                    isRoot: false
-                });
+        Object.keys(newItem).forEach((property) => {
+            modalContent += `<div class="section-header">${property}</div>`;
+            modalContent += buildPageContent({
+                newItem: newItem[property],
+                oldItem: oldItem[property],
+                isRoot: false
             });
+        });
 
-            return modalContent;
+        return modalContent;
     }
 
     function iterateThroughArray({ newItem, oldItem }) {
         let modalContent = '';
-            newItem = newItem || [];
-            oldItem = oldItem || [];
+        newItem = newItem || [];
+        oldItem = oldItem || [];
 
-            // check to see which array is longer
-            const newItemLength = newItem.length;
-            const oldItemLength = oldItem.length;
+        // check to see which array is longer
+        const newItemLength = newItem.length;
+        const oldItemLength = oldItem.length;
 
-            if (newItemLength >= oldItemLength) {
-                // iterate through that array
-                newItem.forEach((item, index) => {
-                    modalContent += buildPageContent({
-                        oldItem: oldItem[index],
-                        newItem: item,
-                        isRoot: false
-                    });
+        if (newItemLength >= oldItemLength) {
+            // iterate through that array
+            newItem.forEach((item, index) => {
+                modalContent += buildPageContent({
+                    oldItem: oldItem[index],
+                    newItem: item,
+                    isRoot: false
                 });
-            } else {
-                // iterate through that array
-                oldItem.forEach((item, index) => {
-                    modalContent += buildPageContent({
-                        newItem: newItem[index],
-                        oldItem: item
-                    });
+            });
+        } else {
+            // iterate through that array
+            oldItem.forEach((item, index) => {
+                modalContent += buildPageContent({
+                    newItem: newItem[index],
+                    oldItem: item
                 });
-            }
-            return modalContent;
+            });
+        }
+        return modalContent;
     }
 
     function buildPageContent({ isRoot, oldItem, newItem }) {
