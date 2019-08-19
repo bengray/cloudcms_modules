@@ -211,14 +211,12 @@ define(function (require, exports, module) {
 
     $(document).on('cloudcms-ready', function () {
         if (isVersionsList()) {
-            // Insert a new option to the top of the select dropdown
-
-            // Detect click on existing dropdown menu
-            // Disable or enable our tool based on number of items selected
+            // Adding a timeout to fix a weird bug where my newDropdownOption was not getting
+            // appended to the menu (Harry suggested this fix)
+            setTimeout(function() {
+                $(dropdownMenu).prepend(newDropdownOption)
+            }, 250);
             $(dropdownToggleButton).on('click', function () {
-                if ($(dropdownMenu).find('.diff-tool').length === 0) {
-                    $(dropdownMenu).prepend(newDropdownOption);
-                }
                 if (isTwoItemsSelected()) {
                     enableDiffTool();
                 } else {
