@@ -1,7 +1,6 @@
 define(function (require, exports, module) {
     require("../libs/diff-match-patch.js");
     require('css!../css/style.css');
-    const UI = require("ui");
     const $ = require("jquery");
     const dmp = new diff_match_patch();
     const windowHref = window.location.href;
@@ -49,8 +48,9 @@ define(function (require, exports, module) {
     }
 
     function renderDiff({ oldItem, newItem }) {
-        oldItem = (oldItem || '').toString();
-        newItem = (newItem || '').toString();
+        console.log('fuuuuuuck');
+        oldItem = (oldItem || '').toString().replace(/</g, "&lt;");
+        newItem = (newItem || '').toString().replace(/</g, "&lt;");
 
         if (!oldItem && newItem) {
             return `<div class="added-text">${newItem}</div>`;
@@ -90,11 +90,10 @@ define(function (require, exports, module) {
         newItem = newItem || {};
         oldItem = oldItem || {};
 
-        newItemKeys = Object.keys(newItem);
-        oldItemKeys = Object.keys(oldItem);
+        let usedKeys = {};
 
-        if (newItemKeys.length >= oldItemKeys.length) {
-            newItemKeys.forEach((property) => {
+        for (let property in newItem) {
+            if (newItem.hasOwnProperty(property)) {
                 modalContent += `<div class='field-content'><span class="field-label">${property}: </span>`;
                 modalContent += buildPageContent({
                     newItem: newItem[property],
@@ -102,17 +101,21 @@ define(function (require, exports, module) {
                     isRoot: false
                 });
                 modalContent += `</div>`;
-            });
-        } else {
-            oldItemKeys.forEach((property) => {
-                modalContent += `<div class='field-content'><span class="field-label">${property}: </span>`;
-                modalContent += buildPageContent({
-                    newItem: newItem[property],
-                    oldItem: oldItem[property],
-                    isRoot: false
-                });
-                modalContent += `</div>`;
-            });
+                usedKeys[property] = true;
+            }
+        }
+        for (let property in oldItem) {
+            if (oldItem.hasOwnProperty(property)) {
+                if (!usedKeys[property]) {
+                    modalContent += `<div class='field-content'><span class="field-label">${property}: </span>`;
+                    modalContent += buildPageContent({
+                        newItem: newItem[property],
+                        oldItem: oldItem[property],
+                        isRoot: false
+                    });
+                    modalContent += `</div>`;
+                }
+            }
         }
 
         return modalContent;
@@ -121,15 +124,34 @@ define(function (require, exports, module) {
     function iterateThroughRootObject({ newItem, oldItem }) {
         let modalContent = '';
 
-        Object.keys(newItem).forEach((property) => {
-            modalContent += `<div class="section-header">${property}</div>`;
-            modalContent += buildPageContent({
-                newItem: newItem[property],
-                oldItem: oldItem[property],
-                isRoot: false
-            });
-        });
+        newItem = newItem || {};
+        oldItem = oldItem || {};
 
+        const usedKeys = {};
+
+        for (let property in newItem) {
+            if (newItem.hasOwnProperty(property)) {
+                modalContent += `<div class="section-header">${property}</div>`;
+                modalContent += buildPageContent({
+                    newItem: newItem[property],
+                    oldItem: oldItem[property],
+                    isRoot: false
+                });
+                usedKeys[property] = true;
+            }
+        }
+        for (let property in oldItem) {
+            if (oldItem.hasOwnProperty(property)) {
+                if (!usedKeys[property]) {
+                    modalContent += `<div class="section-header">${property}</div>`;
+                    modalContent += buildPageContent({
+                        newItem: newItem[property],
+                        oldItem: oldItem[property],
+                        isRoot: false
+                    });
+                }
+            }
+        }
         return modalContent;
     }
 
@@ -166,9 +188,9 @@ define(function (require, exports, module) {
     function buildPageContent({ isRoot, oldItem, newItem }) {
         if (isRoot) {
             return iterateThroughRootObject({ newItem, oldItem });
-        } else if (newItem && Array.isArray(newItem)) {
+        } else if ((newItem && Array.isArray(newItem)) || (oldItem && Array.isArray(oldItem))) {
             return iterateThroughArray({ newItem, oldItem });
-        } else if (newItem && typeof newItem === 'object') {
+        } else if ((newItem && typeof newItem === 'object') || (oldItem && typeof oldItem === 'object')) {
             return iterateThroughObject({ newItem, oldItem });
         } else {
             // If the item is neither an array nor an object at this point, assume it's a scalar value
@@ -213,7 +235,7 @@ define(function (require, exports, module) {
         if (isVersionsList()) {
             // Adding a timeout to fix a weird bug where my newDropdownOption was not getting
             // appended to the menu (Harry suggested this fix)
-            setTimeout(function() {
+            setTimeout(function () {
                 $(dropdownMenu).prepend(newDropdownOption)
             }, 250);
             $(dropdownToggleButton).on('click', function () {
