@@ -1,6 +1,6 @@
 define(function (require, exports, module) {
-    require("./diff-match-patch.js");
-    require('css!./style.css');
+    require("../libs/diff-match-patch.js");
+    require('css!../css/style.css');
     const $ = require("jquery");
     const dmp = new diff_match_patch();
     const windowHref = window.location.href;
@@ -51,7 +51,7 @@ define(function (require, exports, module) {
         oldItem = (oldItem || '').toString();
         newItem = (newItem || '').toString();
 
-        if (newItem && !oldItem ) {
+        if (!oldItem && newItem) {
             return `<div class="added-text">${newItem}</div>`;
         }
         if (!newItem && oldItem) {
