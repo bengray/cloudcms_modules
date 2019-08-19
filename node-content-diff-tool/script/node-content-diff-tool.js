@@ -117,9 +117,8 @@ define(function (require, exports, module) {
         return modalContent;
     }
 
-    function buildPageContent({ isRoot, oldItem, newItem }) {
-        if (isRoot) {
-            let modalContent = '';
+    function iterateThroughRootObject({ newItem, oldItem }) {
+        let modalContent = '';
 
             Object.keys(newItem).forEach((property) => {
                 modalContent += `<div class="section-header">${property}</div>`;
@@ -131,8 +130,10 @@ define(function (require, exports, module) {
             });
 
             return modalContent;
-        } else if (newItem && Array.isArray(newItem)) {
-            let modalContent = '';
+    }
+
+    function iterateThroughArray({ newItem, oldItem }) {
+        let modalContent = '';
             newItem = newItem || [];
             oldItem = oldItem || [];
 
@@ -159,6 +160,13 @@ define(function (require, exports, module) {
                 });
             }
             return modalContent;
+    }
+
+    function buildPageContent({ isRoot, oldItem, newItem }) {
+        if (isRoot) {
+            return iterateThroughRootObject({ newItem, oldItem });
+        } else if (newItem && Array.isArray(newItem)) {
+            return iterateThroughArray({ newItem, oldItem });
         } else if (newItem && typeof newItem === 'object') {
             return iterateThroughObject({ newItem, oldItem });
         } else {
