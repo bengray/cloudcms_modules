@@ -48,20 +48,10 @@ define(function (require, exports, module) {
     }
 
     function renderDiff({ oldItem, newItem }) {
-        oldItem = (oldItem || '').toString();
-        newItem = (newItem || '').toString();
+        const oldString = (oldItem || '').toString();
+        const newString = (newItem || '').toString();
 
-        if (!oldItem && newItem) {
-            return `<div class="added-text">${newItem}</div>`;
-        }
-        if (!newItem && oldItem) {
-            return `<div class="removed-text">${oldItem}</div>`;
-        }
-        if (!newItem && !oldItem) {
-            return `<div class="error">EMPTY</div>`
-        }
-
-        const delta = dmp.diff_main(oldItem, newItem);
+        const delta = dmp.diff_main(oldString, newString);
 
         // Make the diff human readable
         dmp.diff_cleanupSemantic(delta);
