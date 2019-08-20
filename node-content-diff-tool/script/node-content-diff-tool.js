@@ -5,7 +5,7 @@ define(function (require, exports, module) {
     const dmp = new diff_match_patch();
     const windowHref = window.location.href;
     const dropdownToggleButton = ".dropdown-toggle";
-    const dropdownMenu = ".dropdown-menu";
+    const dropdownMenu = "ul[aria-labelledby='list-button-multi-documents-action-selector']";
     const newDropdownOption = '<li class="diff-tool"><a title="Compare Text Versions">' +
         '<i class="fa fa-object-group"></i>&nbsp;Compare Text Versions</a></li>';
     const listItem = "li.diff-tool";
