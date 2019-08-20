@@ -1,0 +1,20 @@
+{
+    "evaluator": "context-document",
+    "config": {
+        "documents-list-selected-actions": [
+            {
+                "key": "Deploy Content...",
+                "buttons": [
+                    {
+                        "key": "do-something-awesome",
+                        "title": "Do Something Awesome",
+                        "iconClass": "glyphicon glyphicon-asterisk",
+                        "allowPermission": [
+                            "read"
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
