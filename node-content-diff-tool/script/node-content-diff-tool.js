@@ -126,7 +126,7 @@ define(function (require, exports, module) {
         newItem = newItem || {};
         oldItem = oldItem || {};
 
-        const usedKeys = {};
+        let usedKeys = {};
 
         for (let property in newItem) {
             if (newItem.hasOwnProperty(property)) {
