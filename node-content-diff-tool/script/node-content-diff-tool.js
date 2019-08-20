@@ -48,9 +48,8 @@ define(function (require, exports, module) {
     }
 
     function renderDiff({ oldItem, newItem }) {
-        console.log('fuuuuuuck');
-        oldItem = (oldItem || '').toString().replace(/</g, "&lt;");
-        newItem = (newItem || '').toString().replace(/</g, "&lt;");
+        oldItem = (oldItem || '').toString();
+        newItem = (newItem || '').toString();
 
         if (!oldItem && newItem) {
             return `<div class="added-text">${newItem}</div>`;
