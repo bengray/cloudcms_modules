@@ -1,9 +1,8 @@
 {
-    "evaluator": "context-document",
     "config": {
         "documents-list-selected-actions": [
             {
-                "key": "Deploy Content...",
+                "title": "Restore Version",
                 "buttons": [
                     {
                         "key": "do-something-awesome",
