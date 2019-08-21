@@ -1,6 +1,6 @@
 {
     "config": {
-        "documents-list-selected-actions": [
+        "documents-list-buttons": [
             {
                 "key": "multi-documents-action-selector",
                 "buttons": [
