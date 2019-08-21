@@ -31,7 +31,7 @@ define(function (require, exports, module) {
     }
 
     function isVersionsList() {
-        return windowHref.indexOf("versions") > -1;
+        return window.location.href.indexOf("versions") > -1;
     }
 
     function isTwoItemsSelected() {
@@ -73,7 +73,7 @@ define(function (require, exports, module) {
         return selectedItems;
     }
 
-    function iterateThroughObject({ newItem, oldItem }) {
+    function iterateThroughObject({ isRoot, newItem, oldItem }) {
         let modalContent = '';
 
         newItem = newItem || {};
@@ -83,64 +83,30 @@ define(function (require, exports, module) {
 
         for (let property in newItem) {
             if (newItem.hasOwnProperty(property)) {
-                modalContent += `<div class='field-content'><span class="field-label">${property}: </span>`;
+                modalContent += isRoot ? `<div class="section-header">${property}</div>` : `<div class='field-content'><span class="field-label">${property}: </span>`;
                 modalContent += buildPageContent({
                     newItem: newItem[property],
                     oldItem: oldItem[property],
                     isRoot: false
                 });
-                modalContent += `</div>`;
+                modalContent += isRoot ? '' : `</div>`;
                 usedKeys[property] = true;
             }
         }
         for (let property in oldItem) {
             if (oldItem.hasOwnProperty(property)) {
                 if (!usedKeys[property]) {
-                    modalContent += `<div class='field-content'><span class="field-label">${property}: </span>`;
+                    modalContent += isRoot ? `<div class="section-header">${property}</div>` : `<div class='field-content'><span class="field-label">${property}: </span>`;
                     modalContent += buildPageContent({
                         newItem: newItem[property],
                         oldItem: oldItem[property],
                         isRoot: false
                     });
-                    modalContent += `</div>`;
+                    modalContent += isRoot ? '' : `</div>`;
                 }
             }
         }
 
-        return modalContent;
-    }
-
-    function iterateThroughRootObject({ newItem, oldItem }) {
-        let modalContent = '';
-
-        newItem = newItem || {};
-        oldItem = oldItem || {};
-
-        let usedKeys = {};
-
-        for (let property in newItem) {
-            if (newItem.hasOwnProperty(property)) {
-                modalContent += `<div class="section-header">${property}</div>`;
-                modalContent += buildPageContent({
-                    newItem: newItem[property],
-                    oldItem: oldItem[property],
-                    isRoot: false
-                });
-                usedKeys[property] = true;
-            }
-        }
-        for (let property in oldItem) {
-            if (oldItem.hasOwnProperty(property)) {
-                if (!usedKeys[property]) {
-                    modalContent += `<div class="section-header">${property}</div>`;
-                    modalContent += buildPageContent({
-                        newItem: newItem[property],
-                        oldItem: oldItem[property],
-                        isRoot: false
-                    });
-                }
-            }
-        }
         return modalContent;
     }
 
@@ -176,7 +142,7 @@ define(function (require, exports, module) {
 
     function buildPageContent({ isRoot, oldItem, newItem }) {
         if (isRoot) {
-            return iterateThroughRootObject({ newItem, oldItem });
+            return iterateThroughObject({ isRoot, newItem, oldItem });
         } else if ((newItem && Array.isArray(newItem)) || (oldItem && Array.isArray(oldItem))) {
             return iterateThroughArray({ newItem, oldItem });
         } else if ((newItem && typeof newItem === 'object') || (oldItem && typeof oldItem === 'object')) {
@@ -218,22 +184,30 @@ define(function (require, exports, module) {
             });
     }
 
+    function optionsListener() {
+        if (isTwoItemsSelected()) {
+            enableDiffTool();
+        } else {
+            disableDiffTool();
+        }
+    }
+
     $(document).on('click', 'li.diff-tool.active-list-item', renderModal);
 
     $(document).on('cloudcms-ready', function () {
+        // Remove listener, prevent leaking
+        $(dropdownToggleButton).off('click', optionsListener);
+
         if (isVersionsList()) {
             // Adding a timeout to fix a weird bug where my newDropdownOption was not getting
             // appended to the menu (Harry suggested this fix)
-            setTimeout(function () {
-                $(dropdownMenu).prepend(newDropdownOption)
-            }, 250);
-            $(dropdownToggleButton).on('click', function () {
-                if (isTwoItemsSelected()) {
-                    enableDiffTool();
-                } else {
-                    disableDiffTool();
-                }
-            });
+            if ($(dropdownMenu).find('.diff-tool').length === 0) {
+                setTimeout(function () {
+                    $(dropdownMenu).prepend(newDropdownOption)
+                }, 0);
+                $(dropdownToggleButton).on('click', optionsListener);
+            }
+
         }
     });
 });
