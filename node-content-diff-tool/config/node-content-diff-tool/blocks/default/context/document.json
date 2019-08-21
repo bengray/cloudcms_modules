@@ -2,7 +2,7 @@
     "config": {
         "documents-list-buttons": [
             {
-                "key": "multi-documents-action-selector",
+                "key": "list-button-multi-documents-action-selector",
                 "buttons": [
                     {
                         "key": "do-something-awesome",
